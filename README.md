@@ -1,2 +1,2 @@
 # Totally Not Another Minecraft Clone
-3D Game made in c++ using OpenGL
+This is a game that we're 100% sure is tottaly not another idiotic Minecraft clone
