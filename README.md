@@ -6,7 +6,7 @@ We're totally sure that this isn't a clone of a blocky game, which isn't owned b
 ## **Features**
 * to be finished
 
-## ****
+## **Updates**
 ### 0.x The X Update
 * **latest update**
 * _**main update**_
