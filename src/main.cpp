@@ -1,6 +1,7 @@
-#include <iostream>
+#include "gfx/window.hpp"
 
 int main()
 {
-    std::cout << "Hello, World!" << std::endl;
+    Window window;
+    window.create_window();
 }
