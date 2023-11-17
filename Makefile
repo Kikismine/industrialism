@@ -42,3 +42,6 @@ game: $(OBJ)
 
 clean:
 	rm -rf $(BIN) $(OBJ)
+
+cleancmp:
+	find . -type f -name '*.o' -delete

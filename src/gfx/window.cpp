@@ -4,8 +4,12 @@
 
 Window wndw;
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void _framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+}
+
+void _error_callback(int code, const char* description) {
+    std::cerr << "GLFW error " << code << ":" << description << "\n";
 }
 
 void Window::init_glfw(GLuint major, GLuint minor) {
@@ -32,7 +36,7 @@ void Window::create_window() {
     const char* c_title = wndw.title.c_str();
     wndw.handle = glfwCreateWindow(wndw.size[0], wndw.size[1], c_title, NULL, NULL);
 
-    std::cout << wndw.handle << "\n";
+    /* std::cout << wndw.handle << "\n"; */
 
     if (wndw.handle == NULL) {
         LOG_ERR("An error has occured while creating GLFW window");
@@ -48,8 +52,9 @@ void Window::create_window() {
         exit(-1);
     }
 
-    glfwSetFramebufferSizeCallback(wndw.handle, framebuffer_size_callback);
+    glfwSetErrorCallback(_error_callback);
+    glfwSetFramebufferSizeCallback(wndw.handle, _framebuffer_size_callback);
 
-    render(wndw.handle);
+    render_init(wndw.handle);
 }
 
