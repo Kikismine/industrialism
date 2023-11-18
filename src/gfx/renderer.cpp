@@ -9,17 +9,38 @@ Shader fragment_shader;
 Shader program_shader;
 
 VBO vbo;
+VBO ebo;
 VAO vao;
 
-float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
+static float vertices[] = {
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left
 };
+
+static GLuint indices[] = {  // note that we start from 0!
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
+};
+
+bool glp_on = false;
 
 void _process_input(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_R && action == GLFW_PRESS) {
+        if (glp_on == false) {
+            glp_on = true;
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else if (glp_on == true) {
+            glp_on = false;
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+    }
 }
 
 void draw() {
@@ -27,22 +48,26 @@ void draw() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     glUseProgram(program_shader.shader);
+
     glBindVertexArray(vao.handle);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void dealloc_elements() {
     glDeleteVertexArrays(1, &vao.handle);
     glDeleteBuffers(1, &vbo.handle);
+    glDeleteBuffers(1, &ebo.handle);
     glDeleteProgram(program_shader.shader);
 }
 
-void vertex_objects_init(GLuint &vbo, GLuint &vao, float vertices[], GLsizei vert_size) {
+void vertex_objects_init(GLuint &vbo, GLuint &vao, GLuint &ebo, float vertices[], GLsizei v_size, GLuint indices[], GLsizei i_size) {
     vbo_create(vbo);
+    vbo_create(ebo);
     vao_create(vao);
 
     vao_bind(true, vao);
-    vbo_buffer(vbo, vertices, vert_size);
+    vbo_buffer(vbo, vertices, v_size);
+    ebo_buffer(ebo, indices, i_size);
 
     vao_vertex_attrib();
 
@@ -70,7 +95,7 @@ void shader_init(Shader &vertex, Shader &fragment, Shader &program) {
 }
 
 void render_init(GLFWwindow *window) {
-    vertex_objects_init(vbo.handle, vao.handle, vertices, sizeof(vertices));
+    vertex_objects_init(vbo.handle, vao.handle, ebo.handle, vertices, sizeof(vertices), indices, sizeof(indices));
     shader_init(vertex_shader, fragment_shader, program_shader);
 
     while (!glfwWindowShouldClose(window))

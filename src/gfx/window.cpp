@@ -12,6 +12,10 @@ void _error_callback(int code, const char* description) {
     std::cerr << "GLFW error " << code << ":" << description << "\n";
 }
 
+void _key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    key_callback(window, key, scancode, action, mods);
+}
+
 void Window::init_glfw(GLuint major, GLuint minor) {
 
     // check if glfwInit() is loaded
@@ -54,6 +58,7 @@ void Window::create_window() {
 
     glfwSetErrorCallback(_error_callback);
     glfwSetFramebufferSizeCallback(wndw.handle, _framebuffer_size_callback);
+    glfwSetKeyCallback(wndw.handle, key_callback);
 
     render_init(wndw.handle);
 }
