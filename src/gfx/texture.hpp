@@ -12,6 +12,6 @@ class Texture {
 };
 
 void texture_create2D(GLuint &handle, GLint wrap_m);
-void texture_load(GLint width, GLint height, GLint c_chan, std::string path);
+void texture_load(GLint width, GLint height, GLint c_chan, std::string path, bool flip);
 
 #endif /* ifndef TEXTURE_HPP */

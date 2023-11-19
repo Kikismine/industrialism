@@ -17,9 +17,10 @@ void texture_create2D(GLuint &handle, GLint wrap_m) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-void texture_load(GLint width, GLint height, GLint c_chan, std::string path) {
+void texture_load(GLint width, GLint height, GLint c_chan, std::string path, bool flip) {
     // flip image
-    /* stbi_set_flip_vertically_on_load(true); */
+    if (flip)
+        stbi_set_flip_vertically_on_load(true);
 
     // load texture
     unsigned char* data = stbi_load(path.c_str(), &width, &height, &c_chan, 0);

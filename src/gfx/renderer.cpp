@@ -14,6 +14,7 @@ VBO ebo;
 VAO vao;
 
 Texture wall;
+Texture spider;
 
 float vertices[] = {
     // positions          // colors           // texture coords
@@ -28,7 +29,9 @@ static GLuint indices[] = {
     1, 2, 3    // second triangle
 };
 
-bool glp_on = false;
+bool glp = false;
+bool rgb = false;
+bool cvr = false;
 
 void _process_input(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -37,12 +40,32 @@ void _process_input(GLFWwindow *window) {
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_R && action == GLFW_PRESS) {
-        if (glp_on == false) {
-            glp_on = true;
+        if (glp == false) {
+            glp = true;
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        } else if (glp_on == true) {
-            glp_on = false;
+        } else if (glp == true) {
+            glp = false;
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+    }
+
+    if (key == GLFW_KEY_F && action == GLFW_PRESS) {
+        if (rgb == false) {
+            rgb = true;
+            program_shader.shader_set_uniform_bool("rgb", 1);
+        } else if (rgb == true) {
+            rgb = false;
+            program_shader.shader_set_uniform_bool("rgb", 0);
+        }
+    }
+
+    if (key == GLFW_KEY_G && action == GLFW_PRESS) {
+        if (cvr == false) {
+            cvr = true;
+            program_shader.shader_set_uniform_bool("cvr", 1);
+        } else if (cvr == true) {
+            cvr = false;
+            program_shader.shader_set_uniform_bool("cvr", 0);
         }
     }
 }
@@ -51,7 +74,11 @@ void draw() {
     glClearColor(0.54, 0.75, 0.91, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, wall.handle);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, spider.handle);
 
     program_shader.use();
 
@@ -102,11 +129,15 @@ void shader_init(Shader &vertex, Shader &fragment, Shader &program) {
 
 void texture_init() {
     texture_create2D(wall.handle, GL_REPEAT);
-    texture_load(wall.width, wall.height, wall.c_chan, "res/textures/wall.png");
+    texture_load(wall.width, wall.height, wall.c_chan, "res/textures/wall.png", false);
+
+    texture_create2D(spider.handle, GL_REPEAT);
+    texture_load(spider.width, spider.height, spider.c_chan, "res/textures/spider.png", true);
 }
 
 void set_shader_vars() {
-    /* program_shader.shader_set_uniform_int("wall", 1); */
+    program_shader.shader_set_uniform_int("spider", 1);
+    program_shader.shader_set_uniform_int("wall", 0);
 }
 
 void render_init(GLFWwindow *window) {
