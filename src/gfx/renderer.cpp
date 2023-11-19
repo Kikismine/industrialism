@@ -3,6 +3,7 @@
 #include "shader.hpp"
 #include "vbo.hpp"
 #include "vao.hpp"
+#include "texture.hpp"
 
 Shader vertex_shader;
 Shader fragment_shader;
@@ -12,14 +13,17 @@ VBO vbo;
 VBO ebo;
 VAO vao;
 
-static float vertices[] = {
-     0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f   // top left
+Texture wall;
+
+float vertices[] = {
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
 };
 
-static GLuint indices[] = {  // note that we start from 0!
+static GLuint indices[] = {
     0, 1, 3,   // first triangle
     1, 2, 3    // second triangle
 };
@@ -47,7 +51,9 @@ void draw() {
     glClearColor(0.54, 0.75, 0.91, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(program_shader.shader);
+    glBindTexture(GL_TEXTURE_2D, wall.handle);
+
+    program_shader.use();
 
     glBindVertexArray(vao.handle);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -94,9 +100,22 @@ void shader_init(Shader &vertex, Shader &fragment, Shader &program) {
     glDeleteShader(fragment.shader);
 }
 
+void texture_init() {
+    texture_create2D(wall.handle, GL_REPEAT);
+    texture_load(wall.width, wall.height, wall.c_chan, "res/textures/wall.png");
+}
+
+void set_shader_vars() {
+    /* program_shader.shader_set_uniform_int("wall", 1); */
+}
+
 void render_init(GLFWwindow *window) {
     vertex_objects_init(vbo.handle, vao.handle, ebo.handle, vertices, sizeof(vertices), indices, sizeof(indices));
     shader_init(vertex_shader, fragment_shader, program_shader);
+    texture_init();
+
+    program_shader.use();
+    set_shader_vars();
 
     while (!glfwWindowShouldClose(window))
         render(window);
