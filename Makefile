@@ -6,7 +6,6 @@ CFLAGS += -Wno-pointer-arith -Wno-newline-eof -Wno-unused-parameter -Wno-gnu-sta
 CFLAGS += -Wno-gnu-compound-literal-initializer -Wno-gnu-zero-variadic-macro-arguments
 CFLAGS += -Ilib/glm -Ilib/glad/include -Ilib/glfw/include -Ilib/stb -fbracket-depth=1024
 LDFLAGS = lib/glad/src/glad.o lib/glfw/src/libglfw3.a
-LDFLAGS += -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa
 
 # GLFW required frameworks on OSX
 ifeq ($(UNAME_S), Darwin)
