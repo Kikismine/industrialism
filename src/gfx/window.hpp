@@ -2,6 +2,7 @@
 #define WINDOW_HPP
 
 #include "../util/util.hpp"
+#include "unistd.h"
 
 class Window {
     public:
@@ -16,11 +17,18 @@ class Window {
         void init_glfw(GLuint major, GLuint minor);
 
     private:
+        bool ap_debug = false;
+
         bool _is_apple() {
-            if (__APPLE__)
+            if (sysconf(_SC_VERSION)) {
+                if (ap_debug == true)
+                    std::cout << "sc on" << std::endl;
                 return true;
-            else
+            } else {
+                if (ap_debug == true)
+                    std::cout << "sc off" << std::endl;
                 return false;
+            }
         }
 };
 
