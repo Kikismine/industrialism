@@ -4,6 +4,9 @@
 #include "vbo.hpp"
 #include "vao.hpp"
 #include "texture.hpp"
+#include "window.hpp"
+
+Window window;
 
 Shader vertex_shader;
 Shader fragment_shader;
@@ -80,13 +83,25 @@ void draw() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, spider.handle);
 
-    glm::mat4 trans = glm::mat4(1.0f);
-    /* trans = glm::translate(trans, glm::vec3(0.0f, -0.0f, 0.0f)); */
-    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.5f, 0.5f, 0.5f));
-    unsigned int transformLoc = program_shader.shader_get_uniform_location("transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
-
     program_shader.use();
+
+    // GLM 3D Transformations
+
+    // init matrixes to identity
+    glm::mat4 model = glm::mat4(1.0f); // model is a main "camera"
+    glm::mat4 view = glm::mat4(1.0f); // view is a "scene"
+    glm::mat4 projection = glm::mat4(1.0f); // projection is a projection matrix (ex. ortographic, perspective, ...)
+
+    /* model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // rotate everything (main "camera" rotation) */
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move the "scene" away from us (to -z axis [right handed system])
+    projection = glm::perspective(glm::radians(45.0f), (float) window.size[0] / (float) window.size[1], 0.1f, 100.0f);
+
+    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+    // pass the matrixes to the shader
+    program_shader.shader_set_matrix4("model", model);
+    program_shader.shader_set_matrix4("view", view);
+    program_shader.shader_set_matrix4("projection", projection);
 
     glBindVertexArray(vao.handle);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -135,7 +150,7 @@ void shader_init(Shader &vertex, Shader &fragment, Shader &program) {
 
 void texture_init() {
     texture_create2D(wall.handle, GL_REPEAT);
-    texture_load(wall.width, wall.height, wall.c_chan, "res/textures/wall.png", false);
+    texture_load(wall.width, wall.height, wall.c_chan, "res/textures/grass_concept.png", false);
 
     texture_create2D(spider.handle, GL_REPEAT);
     texture_load(spider.width, spider.height, spider.c_chan, "res/textures/spider.png", true);
