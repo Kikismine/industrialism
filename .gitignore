@@ -3,3 +3,4 @@ bin
 compile_flags.txt
 *.o
 .vscode
+.github.token
