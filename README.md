@@ -1,4 +1,4 @@
-# **Industrialsm**
+# **Industrialism**
 _3D Game made in C++ using OpenGL_
 
 Voxel game with technical elements and some survival
