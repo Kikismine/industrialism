@@ -80,6 +80,12 @@ void draw() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, spider.handle);
 
+    glm::mat4 trans = glm::mat4(1.0f);
+    /* trans = glm::translate(trans, glm::vec3(0.0f, -0.0f, 0.0f)); */
+    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.5f, 0.5f, 0.5f));
+    unsigned int transformLoc = program_shader.shader_get_uniform_location("transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
     program_shader.use();
 
     glBindVertexArray(vao.handle);

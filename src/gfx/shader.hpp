@@ -18,6 +18,10 @@ class Shader {
             glUseProgram(shader);
         }
 
+        int shader_get_uniform_location(const std::string &name) const {
+            return glGetUniformLocation(shader, name.c_str());
+        }
+
         void shader_set_uniform_bool(const std::string &name, bool value) const {
             glUniform1i(glGetUniformLocation(shader, name.c_str()), (int) value);
         }
