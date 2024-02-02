@@ -18,10 +18,12 @@ class Shader {
             glUseProgram(shader);
         }
 
+        // get uniform location
         int shader_get_uniform_location(const std::string &name) const {
             return glGetUniformLocation(shader, name.c_str());
         }
 
+        // setting simple uniforms
         void shader_set_uniform_bool(const std::string &name, bool value) const {
             glUniform1i(glGetUniformLocation(shader, name.c_str()), (int) value);
         }
@@ -32,6 +34,19 @@ class Shader {
 
         void shader_set_uniform_float(const std::string &name, GLfloat value) const {
             glUniform1f(glGetUniformLocation(shader, name.c_str()), value);
+        }
+
+        // setting matrixes
+        void shader_set_matrix2(const std::string &name, const glm::mat2 &mat) const {
+            glUniformMatrix2fv(shader_get_uniform_location(name), 1, GL_FALSE, &mat[0][0]);
+        }
+
+        void shader_set_matrix3(const std::string &name, const glm::mat3 &mat) const {
+            glUniformMatrix3fv(shader_get_uniform_location(name), 1, GL_FALSE, &mat[0][0]);
+        }
+
+        void shader_set_matrix4(const std::string &name, const glm::mat4 &mat) const {
+            glUniformMatrix4fv(shader_get_uniform_location(name), 1, GL_FALSE, &mat[0][0]);
         }
 };
 
