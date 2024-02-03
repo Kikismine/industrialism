@@ -3,6 +3,7 @@
 
 #include "../util/util.hpp"
 #include "unistd.h"
+#include "camera.hpp"
 
 class Window {
     public:

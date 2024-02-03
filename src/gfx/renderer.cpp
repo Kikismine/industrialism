@@ -5,6 +5,7 @@
 #include "vao.hpp"
 #include "texture.hpp"
 #include "window.hpp"
+#include "camera.hpp"
 
 Window window;
 
@@ -16,32 +17,124 @@ VBO vbo;
 VBO ebo;
 VAO vao;
 
-Texture wall;
-Texture spider;
+Texture grass_top;
 
 float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left
+    // Back face
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    // Front face
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    // Right face
+     0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    // Left face
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+    // Top face
+    -0.5f,  0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+    // Bottom face
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f,  0.0f, 1.0f
 };
 
 static GLuint indices[] = {
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
+    // Back face
+    0, 1, 2,
+    2, 3, 0,
+    // Front face
+    4, 5, 6,
+    6, 7, 4,
+    // Right face
+    8, 9, 10,
+    10, 11, 8,
+    // Left face
+    12, 13, 14,
+    14, 15, 12,
+    // Top face
+    16, 17, 18,
+    18, 19, 16,
+    // Bottom face
+    20, 21, 22,
+    22, 23, 20
+};
+
+glm::vec3 cubes[] {
+    glm::vec3( 0.0f,  0.0f,  0.0f),
+    glm::vec3( 2.0f,  5.0f, -15.0f),
+    glm::vec3(-1.5f, -2.2f, -2.5f),
+    glm::vec3(-3.8f, -2.0f, -12.3f),
+    glm::vec3( 2.4f, -0.4f, -3.5f),
+    glm::vec3(-1.7f,  3.0f, -7.5f),
+    glm::vec3( 1.3f, -2.0f, -2.5f),
+    glm::vec3( 1.5f,  2.0f, -2.5f),
+    glm::vec3( 1.5f,  0.2f, -1.5f),
+    glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
 bool glp = false;
-bool rgb = false;
-bool cvr = false;
+float fov = 45.0f;
 
-void _process_input(GLFWwindow *window) {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
+// camera
+Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+float last_x = window.size[0] / 2.0f;
+float last_y = window.size[1] / 2.0f;
+bool first_mouse = true;
+
+// timing
+GLfloat delta_time = 0.0f;
+GLfloat last_frame = 0.0f;
+GLint counter = 0;
+
+bool fov_change = false;
+
+void _process_input(GLFWwindow *handle) {
+    if (glfwGetKey(handle, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(handle, true);
+
+    if (glfwGetKey(handle, GLFW_KEY_W) == GLFW_PRESS)
+        camera.keyboard_process(FORWARD, delta_time);
+    if (glfwGetKey(handle, GLFW_KEY_S) == GLFW_PRESS)
+        camera.keyboard_process(BACKWARD, delta_time);
+    if (glfwGetKey(handle, GLFW_KEY_A) == GLFW_PRESS)
+        camera.keyboard_process(LEFT, delta_time);
+    if (glfwGetKey(handle, GLFW_KEY_D) == GLFW_PRESS)
+        camera.keyboard_process(RIGHT, delta_time);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_O && action == GLFW_PRESS) {
+        if (fov == 100) {
+            return;
+        } else {
+            fov_change = true;
+            fov += 5;
+        }
+    }
+
+    if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+        if (fov == 5) {
+            return;
+        } else {
+            fov_change = true;
+            fov -= 5;
+        }
+    }
+
     if (key == GLFW_KEY_R && action == GLFW_PRESS) {
         if (glp == false) {
             glp = true;
@@ -51,60 +144,59 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
+}
 
-    if (key == GLFW_KEY_F && action == GLFW_PRESS) {
-        if (rgb == false) {
-            rgb = true;
-            program_shader.shader_set_uniform_bool("rgb", 1);
-        } else if (rgb == true) {
-            rgb = false;
-            program_shader.shader_set_uniform_bool("rgb", 0);
-        }
+void mouse_callback(GLFWwindow* window, double xpos_in, double ypos_in) {
+    float xpos = static_cast<float>(xpos_in);
+    float ypos = static_cast<float>(ypos_in);
+
+    if (first_mouse) {
+        last_x = xpos;
+        last_y = ypos;
+        first_mouse = false;
     }
 
-    if (key == GLFW_KEY_G && action == GLFW_PRESS) {
-        if (cvr == false) {
-            cvr = true;
-            program_shader.shader_set_uniform_bool("cvr", 1);
-        } else if (cvr == true) {
-            cvr = false;
-            program_shader.shader_set_uniform_bool("cvr", 0);
-        }
-    }
+    float x_offset = xpos - last_x;
+    float y_offset = last_y - ypos;
+
+    last_x = xpos;
+    last_y = ypos;
+
+    camera.mouse_process(x_offset, y_offset);
+}
+
+void _mouse_scroll_process(GLFWwindow* window, double x_offset, double y_offset) {
+    camera.mouse_scroll_process(static_cast<float>(y_offset));
 }
 
 void draw() {
     glClearColor(0.54, 0.75, 0.91, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, wall.handle);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, spider.handle);
+    glBindTexture(GL_TEXTURE_2D, grass_top.handle);
 
     program_shader.use();
 
     // GLM 3D Transformations
 
-    // init matrixes to identity
-    glm::mat4 model = glm::mat4(1.0f); // model is a main "camera"
-    glm::mat4 view = glm::mat4(1.0f); // view is a "scene"
-    glm::mat4 projection = glm::mat4(1.0f); // projection is a projection matrix (ex. ortographic, perspective, ...)
-
-    /* model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); // rotate everything (main "camera" rotation) */
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // move the "scene" away from us (to -z axis [right handed system])
-    projection = glm::perspective(glm::radians(45.0f), (float) window.size[0] / (float) window.size[1], 0.1f, 100.0f);
-
-    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-
-    // pass the matrixes to the shader
-    program_shader.shader_set_matrix4("model", model);
-    program_shader.shader_set_matrix4("view", view);
+    glm::mat4 projection = glm::perspective(glm::radians(fov), (float) window.size[0] / (float) window.size[1], 0.1f, 100.0f); // projection is a projection matrix (ex. ortographic, perspective, ...)
     program_shader.shader_set_matrix4("projection", projection);
 
+    // init matrix to identity
+    glm::mat4 view = camera.get_view_matrix(); // view is a "scene"
+    program_shader.shader_set_matrix4("view", view);
+
     glBindVertexArray(vao.handle);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    for(GLuint i = 0; i < (sizeof(cubes) / sizeof(glm::vec3)); i++)
+    {
+        glm::mat4 model = glm::mat4(1.0f); // model is a main "camera"
+        model = glm::translate(model, cubes[i]);
+        /* model = glm::rotate(model, (float)glfwGetTime() * 2 * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); */
+        program_shader.shader_set_matrix4("model", model);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    }
 }
 
 void dealloc_elements() {
@@ -149,19 +241,17 @@ void shader_init(Shader &vertex, Shader &fragment, Shader &program) {
 }
 
 void texture_init() {
-    texture_create2D(wall.handle, GL_REPEAT);
-    texture_load(wall.width, wall.height, wall.c_chan, "res/textures/grass_concept.png", false);
-
-    texture_create2D(spider.handle, GL_REPEAT);
-    texture_load(spider.width, spider.height, spider.c_chan, "res/textures/spider.png", true);
+    texture_create2D(grass_top.handle, GL_REPEAT);
+    texture_load(grass_top.width, grass_top.height, grass_top.c_chan, "res/textures/grass_simple_top.png", false);
 }
 
 void set_shader_vars() {
-    program_shader.shader_set_uniform_int("spider", 1);
-    program_shader.shader_set_uniform_int("wall", 0);
+    program_shader.shader_set_uniform_int("grass_top", 0);
+    program_shader.shader_set_uniform_int("grass_side", 0);
+    program_shader.shader_set_uniform_int("grass_bottom", 0);
 }
 
-void render_init(GLFWwindow *window) {
+void render_init(GLFWwindow *handle) {
     vertex_objects_init(vbo.handle, vao.handle, ebo.handle, vertices, sizeof(vertices), indices, sizeof(indices));
     shader_init(vertex_shader, fragment_shader, program_shader);
     texture_init();
@@ -169,19 +259,38 @@ void render_init(GLFWwindow *window) {
     program_shader.use();
     set_shader_vars();
 
-    while (!glfwWindowShouldClose(window))
-        render(window);
+    glEnable(GL_DEPTH_TEST);
+
+    while (!glfwWindowShouldClose(handle))
+        render(handle);
 
     dealloc_elements();
     exit_wgl();
 }
 
 void render(GLFWwindow *window) {
+    // get per-frame timing
+    GLfloat current_frame = camera.get_current_frame();
+    delta_time = current_frame - last_frame;
+    last_frame = current_frame;
+
+    counter++;
+
     // process input
     _process_input(window);
 
     // render
     draw();
+
+    if (fov_change == true) {
+        fov_change = false;
+        std::cout << "current fov: " << fov << "\n";
+    }
+
+    if (counter >= 60) {
+        std::cout << "camera position: " << camera.position.x << ", " << camera.position.y << ", " << camera.position.z << "\n";
+        counter = 0;
+    }
 
     // events and swap
     glfwSwapBuffers(window);
