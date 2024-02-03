@@ -9,18 +9,18 @@ bool is_fullscreen = false;
 GLFWmonitor* monitor;
 const GLFWvidmode* mode;
 
-void fullscreen(bool turn_on) {
-    if (turn_on && is_fullscreen == false) {
-        glfwSetWindowMonitor(wndw.handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-        is_fullscreen = true;
-        return;
-    } else if (turn_on == false && is_fullscreen == true) {
-        glfwSetWindowMonitor(wndw.handle, NULL, wndw.size[0] / 7, wndw.size[1] / 7, wndw.size[0], wndw.size[1], 0);
-        is_fullscreen = false;
-        return;
-    } else
-        return;
-}
+/* void fullscreen(bool turn_on) { */
+/*     if (turn_on && is_fullscreen == false) { */
+/*         glfwSetWindowMonitor(wndw.handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate); */
+/*         is_fullscreen = true; */
+/*         return; */
+/*     } else if (turn_on == false && is_fullscreen == true) { */
+/*         glfwSetWindowMonitor(wndw.handle, NULL, wndw.size[0] / 7, wndw.size[1] / 7, wndw.size[0], wndw.size[1], 0); */
+/*         is_fullscreen = false; */
+/*         return; */
+/*     } else */
+/*         return; */
+/* } */
 
 void _framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -33,8 +33,8 @@ void _error_callback(int code, const char* description) {
 void _key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     key_callback(window, key, scancode, action, mods);
 
-    if (glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS)
-        fullscreen(true);
+    /* if (glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS) */
+    /*     fullscreen(true); */
 }
 
 void _mouse_callback(GLFWwindow* window, double xpos, double ypos) {
@@ -100,6 +100,8 @@ void Window::create_window() {
     glfwSetKeyCallback(wndw.handle, _key_callback);
     glfwSetCursorPosCallback(wndw.handle, _mouse_callback);
     glfwSetScrollCallback(wndw.handle, _scroll_callback);
+
+    glfwSetWindowPos(wndw.handle, mode->width/9, mode->height/9);
 
     render_init(wndw.handle);
 }

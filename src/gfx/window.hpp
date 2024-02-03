@@ -9,7 +9,7 @@ class Window {
     public:
         GLFWwindow* handle;
 
-        std::vector<std::uint16_t> size{1200, 800};
+        std::vector<std::uint16_t> size{1920, 1100};
         std::string title{"window"};
 
         bool is_apple = _is_apple();
