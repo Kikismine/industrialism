@@ -73,18 +73,18 @@ static GLuint indices[] = {
     22, 23, 20
 };
 
-glm::vec3 cubes[] {
-    glm::vec3( 0.0f,  0.0f,  0.0f),
-    glm::vec3( 2.0f,  5.0f, -15.0f),
-    glm::vec3(-1.5f, -2.2f, -2.5f),
-    glm::vec3(-3.8f, -2.0f, -12.3f),
-    glm::vec3( 2.4f, -0.4f, -3.5f),
-    glm::vec3(-1.7f,  3.0f, -7.5f),
-    glm::vec3( 1.3f, -2.0f, -2.5f),
-    glm::vec3( 1.5f,  2.0f, -2.5f),
-    glm::vec3( 1.5f,  0.2f, -1.5f),
-    glm::vec3(-1.3f,  1.0f, -1.5f)
-};
+/* glm::vec3 cubes[] { */
+/*     glm::vec3( 0.0f,  0.0f,  0.0f), */
+/*     glm::vec3( 2.0f,  5.0f, -15.0f), */
+/*     glm::vec3(-1.5f, -2.2f, -2.5f), */
+/*     glm::vec3(-3.8f, -2.0f, -12.3f), */
+/*     glm::vec3( 2.4f, -0.4f, -3.5f), */
+/*     glm::vec3(-1.7f,  3.0f, -7.5f), */
+/*     glm::vec3( 1.3f, -2.0f, -2.5f), */
+/*     glm::vec3( 1.5f,  2.0f, -2.5f), */
+/*     glm::vec3( 1.5f,  0.2f, -1.5f), */
+    /* glm::vec3(-1.3f,  1.0f, -1.5f) */
+/* }; */
 
 bool glp = false;
 float fov = 45.0f;
@@ -189,13 +189,22 @@ void draw() {
 
     glBindVertexArray(vao.handle);
 
-    for(GLuint i = 0; i < (sizeof(cubes) / sizeof(glm::vec3)); i++)
-    {
-        glm::mat4 model = glm::mat4(1.0f); // model is a main "camera"
-        model = glm::translate(model, cubes[i]);
-        /* model = glm::rotate(model, (float)glfwGetTime() * 2 * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); */
-        program_shader.shader_set_matrix4("model", model);
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    /* for(GLuint i = 0; i < (sizeof(cubes) / sizeof(glm::vec3)); i++) */
+    /* { */
+    /*     glm::mat4 model = glm::mat4(1.0f); // model is a main "camera" */
+    /*     model = glm::translate(model, cubes[i]); */
+    /*     /1* model = glm::rotate(model, (float)glfwGetTime() * 2 * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f)); *1/ */
+    /*     program_shader.shader_set_matrix4("model", model); */
+    /*     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0); */
+    /* } */
+
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3((float) i, -1.5f, (float) j));
+            program_shader.shader_set_matrix4("model", model);
+            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        }
     }
 }
 
@@ -247,8 +256,6 @@ void texture_init() {
 
 void set_shader_vars() {
     program_shader.shader_set_uniform_int("grass_top", 0);
-    program_shader.shader_set_uniform_int("grass_side", 0);
-    program_shader.shader_set_uniform_int("grass_bottom", 0);
 }
 
 void render_init(GLFWwindow *handle) {
