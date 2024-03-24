@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include <string>
-#include <vector>
 #include <cstdint>
 
 namespace kvc {

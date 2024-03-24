@@ -1,4 +1,5 @@
 *.o
 *.spv
+bin
 compile_flags.txt
 compile.sh

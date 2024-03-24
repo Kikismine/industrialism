@@ -5,6 +5,7 @@
 int main() {
     kvc::Engine app{};
 
+    // try to run the engine
     try {
         app.run();
     } catch (const std::exception &e) {

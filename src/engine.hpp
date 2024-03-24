@@ -2,6 +2,7 @@
 
 #include "kvc/kvc_window.hpp"
 #include "kvc/kvc_pipeline.hpp"
+#include "kvc/kvc_instance.hpp"
 
 namespace kvc {
 
@@ -13,6 +14,7 @@ class Engine {
         void run();
     private:
         KvcWindow kvcWindow{width, height, "window"};
+        KvcInstance kvcInstance{"KVC", {1, 0, 0}, "KVC Engine", {1, 0, 0}};
         KvcPipeline kvcPipeline{"res/shaders/vertex.vert.spv", "res/shaders/fragment.frag.spv"};
 };
 
