@@ -20,6 +20,8 @@ class KvcInstance {
         KvcInstance(const KvcInstance&) = delete;
         KvcInstance &operator=(const KvcInstance&) = delete;
 
+        VkInstance instance;
+
     private:
         void createInstance();
         void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
@@ -38,23 +40,44 @@ class KvcInstance {
             const bool enableValidationLayers = true;
         #endif
 
-        VkInstance instance;
         VkDebugUtilsMessengerEXT debugMessenger;
         std::string appName, engineName;
         std::vector<std::uint8_t> appVersion;
         std::vector<std::uint8_t> engineVersion;
+
+        static const bool _lVerbose = false;
+        static const bool _lInfo = false;
+        static const bool _lWarning = true;
+        static const bool _lError = true;
+        static const bool _lBits = false;
 
         // validation layers custom debug callback implementation
         static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, VkDebugUtilsMessageTypeFlagsEXT messageType, const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, void* pUserData) {
             // check if message is more important then ...
             // if (messageSeverity >= ...) {}
 
-            bool vnInfoDebug = true;
-
-            if (!vnInfoDebug && messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT)
-                std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
-            else if (vnInfoDebug)
-                std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+            // for every layer category (severity), type different pre-text
+            // and type it just if the category bool is 'checked'
+            switch (messageSeverity) {
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
+                    if (_lVerbose) std::cout << "[VERBOSE]: " << pCallbackData->pMessage << "\n";
+                    break;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT:
+                    if (_lInfo) std::cout << "[INFO]: " << pCallbackData->pMessage << "\n";
+                    break;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
+                    if (_lWarning) std::cout << "[WARNING]: " << pCallbackData->pMessage << "\n";
+                    break;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT:
+                    if (_lError) std::cerr << "[ERROR]: " << pCallbackData->pMessage << std::endl;
+                    break;
+                case VK_DEBUG_UTILS_MESSAGE_SEVERITY_FLAG_BITS_MAX_ENUM_EXT:
+                    if (_lBits) std::cout << "[FLAG BITS (kvc_instance)]: " << pCallbackData->pMessage << "\n";
+                    break;
+                default:
+                    std::cout << "[SEVERITY NOT FOUND (kvc_instance)]: " << pCallbackData->pMessage << "\n";
+                    break;
+            }
 
             return VK_FALSE;
         }
