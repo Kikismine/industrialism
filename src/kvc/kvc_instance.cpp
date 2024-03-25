@@ -29,7 +29,7 @@ bool KvcInstance::checkValidationLayerSupport() {
     vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
     // list (cout) all the available validation layers
-    std::cout << "available extensions:\n";
+    std::cout << "available validation layers:\n";
     for (const auto& layer: availableLayers)
         std::cout << "\t" << layer.layerName << "\n";
     std::cout << "\n";
@@ -151,7 +151,7 @@ void KvcInstance::createInstance() {
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
         throw std::runtime_error("failed to create vulkan instance");
     else
-        std::cout << "created vulkan instance successfully\n\n";
+        std::cout << "\ncreated vulkan instance successfully\n";
 }
 
 }
