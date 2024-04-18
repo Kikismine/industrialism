@@ -1,5 +1,5 @@
 *.o
 *.spv
-bin
-compile_flags.txt
+build
 compile.sh
+.idea
