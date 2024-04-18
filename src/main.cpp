@@ -3,11 +3,11 @@
 #include <iostream>
 
 int main() {
-    kvc::Engine app{};
+    kvc::Engine engine{};
 
     // try to run the engine
     try {
-        app.run();
+        engine.run();
     } catch (const std::exception &e) {
         std::cerr << e.what() << "\n";
         return 1;

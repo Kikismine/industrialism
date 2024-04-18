@@ -16,7 +16,7 @@ class Engine {
     private:
         KvcWindow kvcWindow{width, height, "window"};
         KvcInstance kvcInstance{"KVC", {1, 0, 0}, "KVC Engine", {1, 0, 0}};
-        KvcDevice kvcDevice{kvcInstance.instance};
+        KvcDevice kvcDevice{kvcInstance.instance, kvcInstance.enableValidationLayers, kvcInstance.validationLayers};
         KvcPipeline kvcPipeline{"res/shaders/vertex.vert.spv", "res/shaders/fragment.frag.spv"};
 };
 

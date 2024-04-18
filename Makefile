@@ -2,7 +2,7 @@ UNAME_S = $(shell uname -s) # device type
 
 CPP = clang++
 CFLAGS = -std=c++20 --debug -g -Wall -Wextra -Wpedantic -Wstrict-aliasing -Weffc++
-CFLAGS += -Wno-pointer-arith -Wno-newline-eof -Wno-unused-parameter -Wno-gnu-statement-expression
+CFLAGS += -Wno-pointer-arith -Wno-newline-eof -Wno-unused-parameter -Wno-gnu-statement-expression -Wno-unused-header-directive
 CFLAGS += -Wno-gnu-compound-literal-initializer -Wno-gnu-zero-variadic-macro-arguments
 CFLAGS += -Ilib/glm -Ilib/glfw/include -fbracket-depth=1024
 

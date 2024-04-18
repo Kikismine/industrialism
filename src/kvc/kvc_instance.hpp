@@ -1,14 +1,6 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-
-#include <cstdint>
-#include <vector>
-#include <string>
-#include <iostream>
+#include "kvc_util.hpp"
 
 namespace kvc {
 
@@ -22,13 +14,6 @@ class KvcInstance {
 
         VkInstance instance;
 
-    private:
-        void createInstance();
-        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
-        void setupDebugMessenger();
-        bool checkValidationLayerSupport();
-        std::vector<const char*> getRequiredExtensions();
-
         const std::vector<const char*> validationLayers = {
             "VK_LAYER_KHRONOS_validation"
         };
@@ -39,6 +24,13 @@ class KvcInstance {
         #else
             const bool enableValidationLayers = true;
         #endif
+
+    private:
+        void createInstance();
+        void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
+        void setupDebugMessenger();
+        bool checkValidationLayerSupport();
+        std::vector<const char*> getRequiredExtensions();
 
         VkDebugUtilsMessengerEXT debugMessenger;
         std::string appName, engineName;
