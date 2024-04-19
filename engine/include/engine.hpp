@@ -17,7 +17,7 @@ class Engine {
         KvcWindow kvcWindow{width, height, "window"};
         KvcInstance kvcInstance{"KVC", {1, 0, 0}, "KVC Engine", {1, 0, 0}};
         KvcDevice kvcDevice{kvcInstance.instance, kvcInstance.enableValidationLayers, kvcInstance.validationLayers};
-    [[maybe_unused]] KvcPipeline kvcPipeline{"res/shaders/vertex.vert.spv", "res/shaders/fragment.frag.spv"};
+    [[maybe_unused]] KvcPipeline kvcPipeline{"../engine/res/shaders/vertex.vert.spv", "../engine/res/shaders/fragment.frag.spv"};
 };
 
 }
