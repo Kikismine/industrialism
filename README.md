@@ -3,7 +3,7 @@
 _3D Game made in C++ using Vulkan_
 
 ---
-**Industrialism** is an in-dev game (mostly the engine), focused on _technical_ and _logical_ aspects[^2]
+**Industrialism** is an in-dev game (mostly the engine), focused on _technical_ and _logical_ aspects[^1]
 
 Currently, it does this:
 
