@@ -41,7 +41,7 @@ The same is with the readme, if you want to change something, make a pull reques
 ---
 
 - it runs on vulkan 1.3
-- c++ standard ist 2023 version
+- c++ standard is 2023 version
 - it is built on (for now, maybe forever) cmake build system with a main app and engine 'library' that is compiled with the needed libraries, classes and files
 - libraries the engine is using:
     - [GLFW](https://github.com/glfw/glfw) (for window and input handling)
