@@ -1,10 +1,12 @@
 #include "kvc/kvc_device.hpp"
 
+#include <set>
+
 namespace kvc {
 
-KvcDevice::KvcDevice(VkInstance &instance, const bool _enableValidationLayers, const std::vector<const char*>& _validationLayers) : enableValidationLayers(_enableValidationLayers), validationLayers(_validationLayers) {
-    pickPhysicalDevice(instance);
-    createLogicalDevice();
+KvcDevice::KvcDevice(VkInstance &instance, VkSurfaceKHR surface, const bool _enableValidationLayers, const std::vector<const char*>& _validationLayers) : enableValidationLayers(_enableValidationLayers), validationLayers(_validationLayers) {
+    pickPhysicalDevice(instance, surface);
+    createLogicalDevice(surface);
 }
 
 KvcDevice::~KvcDevice() {
@@ -13,7 +15,7 @@ KvcDevice::~KvcDevice() {
 
 // find queue families of a GPU, and check what queue families are available
 // using std::optional with std::uint32_t
-KvcDevice::QueueFamilyIndices KvcDevice::findQueueFamilies(VkPhysicalDevice device) {
+KvcDevice::QueueFamilyIndices KvcDevice::findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface) {
     KvcDevice::QueueFamilyIndices indices;
 
     // get a list of available queue families of the physical device
@@ -23,10 +25,17 @@ KvcDevice::QueueFamilyIndices KvcDevice::findQueueFamilies(VkPhysicalDevice devi
     vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
 
     // filter and find at least one queue family with VK_QUEUE_GRAPHICS_BIT support
+    //
     int i = 0;
     for (const auto& queueFamily: queueFamilies) {
         if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
             indices.graphicsFamily = i;
+
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
+        if (presentSupport)
+            indices.presentFamily = i;
 
         if (indices.isComplete())
             break;
@@ -68,7 +77,7 @@ std::string KvcDevice::getPhysicalDeviceName(VkPhysicalDevice device) {
 }
 
 // find and pick the best suiting GPU with Vulkan support
-void KvcDevice::pickPhysicalDevice(VkInstance &instance) {
+void KvcDevice::pickPhysicalDevice(VkInstance &instance, VkSurfaceKHR surface) {
     // list all devices with Vulkan support
     std::uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -98,7 +107,7 @@ void KvcDevice::pickPhysicalDevice(VkInstance &instance) {
 
     // check if the first candidate is even suitable
     if (candidates.rbegin()->first > 0) {
-        QueueFamilyIndices indices = findQueueFamilies(candidates.rbegin()->second);
+        QueueFamilyIndices indices = findQueueFamilies(candidates.rbegin()->second, surface);
 
         if (!indices.isComplete())
             throw std::runtime_error("current GPU doesn't have a queue family with VK_QUEUE_GRAPHICS_BIT support");
@@ -110,18 +119,27 @@ void KvcDevice::pickPhysicalDevice(VkInstance &instance) {
     }
 }
 
-void KvcDevice::createLogicalDevice() {
-    KvcDevice::QueueFamilyIndices indices = KvcDevice::findQueueFamilies(physicalDevice);
+void KvcDevice::createLogicalDevice(VkSurfaceKHR surface) {
+    KvcDevice::QueueFamilyIndices indices = KvcDevice::findQueueFamilies(physicalDevice, surface);
 
-    // specifying queue creation
-    VkDeviceQueueCreateInfo queueCreateInfo{};
-    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
-    queueCreateInfo.queueCount = 1;
+    // create a vector that stores all queue creation infos
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
 
     // vulkan is capable of using queue priority (so I'll do it before some cool algorithm)
     float queuePriority = 1.0f;
-    queueCreateInfo.pQueuePriorities = &queuePriority;
+
+    // specify queue creation for every queue family in the uniqueQueueFamilies
+    for ([[maybe_unused]] uint32_t queueFamily: uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+
+        // push this queue family to the vector;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
 
     // specifying device features (null for now)
     VkPhysicalDeviceFeatures deviceFeatures{};
@@ -130,8 +148,8 @@ void KvcDevice::createLogicalDevice() {
     VkDeviceCreateInfo createInfo{};
     // add pointers to queue creation info and device features struct
     createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-    createInfo.pQueueCreateInfos = &queueCreateInfo;
-    createInfo.queueCreateInfoCount = 1;
+    createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+    createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
     createInfo.pEnabledFeatures = &deviceFeatures;
 
@@ -152,6 +170,7 @@ void KvcDevice::createLogicalDevice() {
         std::cout << "the logical device was successfully created\n";
 
     vkGetDeviceQueue(device, indices.graphicsFamily.value(), 0, &graphicsQueue);
+    vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
 }
 
 }

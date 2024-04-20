@@ -1,5 +1,6 @@
 #include <kvc/kvc_window.hpp>
 #include <utility>
+#include <stdexcept>
 
 namespace kvc {
 
@@ -15,7 +16,9 @@ KvcWindow::~KvcWindow() {
 
 void KvcWindow::initWindow() {
     // glfw initialization and window creation
-    glfwInit();
+    if (!glfwInit())
+        throw std::runtime_error("failed to initialize GLFW");
+
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 

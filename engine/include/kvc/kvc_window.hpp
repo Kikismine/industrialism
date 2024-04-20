@@ -16,6 +16,8 @@ class KvcWindow {
         KvcWindow(const KvcWindow &) = delete;
         KvcWindow &operator=(const KvcWindow &) = delete;
 
+        GLFWwindow* window;
+
         bool shouldClose() { return glfwWindowShouldClose(window); }
 
     private:
@@ -23,7 +25,6 @@ class KvcWindow {
 
         std::uint16_t width, height;
         std::string name;
-        GLFWwindow *window{};
 };
 
 }

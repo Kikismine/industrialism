@@ -13,6 +13,7 @@ class KvcInstance {
         KvcInstance &operator=(const KvcInstance&) = delete;
 
         VkInstance instance{};
+        VkSurfaceKHR surface;
 
         const std::vector<const char*> validationLayers = {
             "VK_LAYER_KHRONOS_validation"
@@ -27,6 +28,8 @@ class KvcInstance {
 
     private:
         void createInstance();
+        void createSurface();
+
         static void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo);
         void setupDebugMessenger();
         bool checkValidationLayerSupport();
@@ -36,6 +39,8 @@ class KvcInstance {
         std::string appName, engineName;
         std::vector<std::uint8_t> appVersion;
         std::vector<std::uint8_t> engineVersion;
+
+        GLFWwindow *window;
 
         static const bool _lVerbose = false;
         static const bool _lInfo = false;

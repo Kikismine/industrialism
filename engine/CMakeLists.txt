@@ -14,7 +14,9 @@ add_library(${PROJECT_NAME} src/engine.cpp
         src/kvc/kvc_window.cpp
         src/kvc/kvc_pipeline.cpp
         src/kvc/kvc_instance.cpp
-        src/kvc/kvc_device.cpp)
+        src/kvc/kvc_device.cpp
+        src/kvc/kvc_surface.cpp
+)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
