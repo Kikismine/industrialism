@@ -7,12 +7,19 @@ _3D Game made in C++ using Vulkan_
 
 Currently, it does this:
 
+19.04.24 (or earlier)
+
 - finds and loads defined vulkan validation layers and extensions
 - creates a vulkan instance
 - creates a configurable vulkan debug messenger
 - finds all available GPUs, checks if they support needed functions and statistics, and sorts them based on their stats, then it picks the best one
 - creates a logical device for GPU communication with the software
-- loading a precompiled shader files (but it doesn't use them)
+- loading a precompiled shader files (but it doesn't use them)\
+
+20.04.24
+
+- it creates a window surface that can be configured for specific support (X.org, Win32, Wayland, Metal, ...), and checks for its support on the GPU
+- support for more queue families (std::vector system), currently just two queues: graphics and present queue 
 
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
