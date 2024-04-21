@@ -5,7 +5,7 @@ _3D Game made in C++ using Vulkan_
 ---
 **Industrialism** is an in-dev game (mostly the engine), focused on _technical_ and _logical_ aspects[^1]
 
-Currently, it does this:
+This is something like changelog:
 
 19.04.24 (or earlier)
 
@@ -20,6 +20,12 @@ Currently, it does this:
 
 - it creates a window surface that can be configured for specific support (X.org, Win32, Wayland, Metal, ...), and checks for its support on the GPU
 - support for more queue families (std::vector system), currently just two queues: graphics and present queue 
+
+21.04.24
+
+- engine rewrite, vk-bootrstrap library now do all the vulkan boilerplate you must do to even see something in the window...
+- currently, all the earlier changelog things should be okay (it's a few hundred lines of code less)
+- the vk-bootrstrap will be removed when I want to jog and change this boilerplate stuff etc., but it's not fun for me + it's very time-consuming to write this boilerplate code, and you get really nothing from it (on start, later I'll want to change things...)
 
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
@@ -53,6 +59,7 @@ The same is with the readme, if you want to change something, make a pull reques
 - libraries the engine is using:
     - [GLFW](https://github.com/glfw/glfw) (for window and input handling)
     - [glm](https://github.com/g-truc/glm) (for math)
+    - [vk-bootstrap](https://github.com/charles-lunarg/vk-bootstrap) (for vulkan boilerplate code)
 
 ### Contact
 
