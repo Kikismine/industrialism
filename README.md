@@ -19,18 +19,18 @@ This is something like changelog:
 20.04.24
 
 - it creates a window surface that can be configured for specific support (X.org, Win32, Wayland, Metal, ...), and checks for its support on the GPU
-- support for more queue families (std::vector system), currently just two queues: graphics and present queue 
+- support for more queue families (`std::vector` system), currently just two queues: graphics and present queue 
 
 21.04.24
 
-- engine rewrite, vk-bootrstrap library now do all the vulkan boilerplate you must do to even see something in the window...
+- engine rewrite, `vk-bootrstrap` library now do all the vulkan boilerplate you must do to even see something in the window...
 - currently, all the earlier changelog things should be okay (it's a few hundred lines of code less)
-- the vk-bootrstrap will be removed when I want to jog and change this boilerplate stuff etc., but it's not fun for me + it's very time-consuming to write this boilerplate code, and you get really nothing from it (on start, later I'll want to change things...)
+- the `vk-bootrstrap` will be removed when I want to jog and change this boilerplate stuff etc., but it's not fun for me + it's very time-consuming to write this boilerplate code, and you get really nothing from it (on start, later I'll want to change things...)
 
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
 
-_I know that this list will grow, so maybe I'll store all these things in some .txt file and add a link to it ;)_
+_I know that this changelog will grow, so maybe I'll store all these things in some .txt file and add a link to it ;)_
 
 ### What I want it to be
 
