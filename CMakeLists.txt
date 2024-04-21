@@ -3,9 +3,35 @@ project(industrialism VERSION 0.1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_subdirectory(engine)
+# library find functions
+find_package(Vulkan REQUIRED)
 
-add_executable(${PROJECT_NAME} src/main.cpp)
+# add external libs (with cmake)
+add_subdirectory(lib/glm)
+add_subdirectory(lib/glfw)
+add_subdirectory(lib/vkb)
 
-target_link_libraries(${PROJECT_NAME} industrialism_engine)
-target_link_directories(${PROJECT_NAME} PRIVATE industrialism_engine)
+add_executable(${PROJECT_NAME}
+        src/main.cpp
+        src/engine.cpp
+        include/engine.hpp
+        include/util.hpp)
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        ${Vulkan_INCLUDE_DIRS}
+        glm
+        glfw
+        PRIVATE
+)
+
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC
+        ${Vulkan_LIBRARIES}
+        glm
+        glfw
+        vk-bootstrap::vk-bootstrap
+        PRIVATE
+)

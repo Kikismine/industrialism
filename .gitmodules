@@ -1,6 +1,9 @@
-[submodule "engine/lib/glfw"]
-	path = engine/lib/glfw
+[submodule "lib/glfw"]
+	path = lib/glfw
 	url = https://github.com/glfw/glfw
-[submodule "engine/lib/glm"]
-	path = engine/lib/glm
+[submodule "lib/vkb"]
+	path = lib/vkb
+	url = https://github.com/charles-lunarg/vk-bootstrap
+[submodule "lib/glm"]
+	path = lib/glm
 	url = https://github.com/g-truc/glm

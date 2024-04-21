@@ -1,17 +1,11 @@
 #include <engine.hpp>
 
-#include <iostream>
-
 int main() {
-    kvc::Engine engine{};
+    Engine engine;
 
-    // try to run the engine
-    try {
-        engine.run();
-    } catch (const std::exception &e) {
-        std::cerr << e.what() << "\n";
-        return 1;
-    }
+    engine.init();
+    engine.run();
+    engine.terminate();
 
     return 0;
 }
