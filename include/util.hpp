@@ -11,3 +11,7 @@
 #include <vector>
 #include <stdexcept>
 #include <cstdint>
+#include <cstdio>
+#include <filesystem>
+
+#define VK_CHECK(x) do { VkResult err = x; if (err) { std::cerr << "vulkan err: " << err << "\n"; abort(); } } while (0)

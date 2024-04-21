@@ -3,8 +3,7 @@
 //
 
 #include <engine.hpp>
-
-struct Window window;
+#include <initializers.hpp>
 
 void errorCallback(int error, const char* description) {
     std::cerr << "glfw error: " << description << "\n";
@@ -99,6 +98,10 @@ void Engine::init_vulkan() {
     // get the VkDevice handle from the `vkb_device`
     device = vkb_device.device;
     physical_device = vkb_physical_device.physical_device;
+
+    // get graphics queue
+    graphics_queue = vkb_device.get_queue(vkb::QueueType::graphics).value();
+    graphics_queue_family = vkb_device.get_queue_index(vkb::QueueType::graphics).value();
 }
 
 void Engine::create_swapchain(std::uint32_t width, std::uint32_t height) {
@@ -139,15 +142,31 @@ void Engine::init_swapchain() {
 }
 
 void Engine::init_commands() {
+    VkCommandPoolCreateInfo command_pool_info = init::command_pool_create_info(graphics_queue_family, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 
+    for (int i = 0; i < FRAME_OVERLAP; ++i) {
+        VK_CHECK(vkCreateCommandPool(device, &command_pool_info, nullptr, &frames[i].command_pool));
+
+        // allocate the default command buffer
+        VkCommandBufferAllocateInfo cmd_alloc_info = init::command_buffer_allocate_info(frames[i].command_pool, 1);
+
+        VK_CHECK(vkAllocateCommandBuffers(device, &cmd_alloc_info, &frames[i].main_command_buffer));
+    }
 }
 
 void Engine::init_sync_structures() {
-
 }
 
 void Engine::terminate() {
     if (is_init) {
+        // check if gpu stopped doing things
+        vkDeviceWaitIdle(device);
+
+        // destroy command pools (frames..)
+        for (int i = 0; i < FRAME_OVERLAP; ++i) {
+            vkDestroyCommandPool(device, frames[i].command_pool, nullptr);
+        }
+
         destroy_swapchain();
 
         vkDestroySurfaceKHR(instance, surface, nullptr);

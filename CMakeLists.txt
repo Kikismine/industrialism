@@ -14,6 +14,7 @@ add_subdirectory(lib/vkb)
 add_executable(${PROJECT_NAME}
         src/main.cpp
         src/engine.cpp
+        src/initializers.cpp
         include/engine.hpp
         include/util.hpp)
 
