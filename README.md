@@ -29,7 +29,7 @@ This is something like changelog:
 
 11.05.24
 
-_yeah little breake_
+_yeah little break_
 - displaying something to the window (blue to black flashing)
 - fences and semaphores for waiting for the gpu rendering (draw) loop
 - some optimization and stuff
