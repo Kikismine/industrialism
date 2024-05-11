@@ -4,6 +4,8 @@
 
 #include <engine.hpp>
 #include <initializers.hpp>
+#include <images.hpp>
+#include <complex>
 
 void errorCallback(int error, const char* description) {
     std::cerr << "glfw error: " << description << "\n";
@@ -132,8 +134,8 @@ void Engine::destroy_swapchain() {
     vkDestroySwapchainKHR(device, swapchain, nullptr);
 
     // destroy swapchain + its image(s)
-    for (int i = 0; i < swapchain_image_views.size(); ++i) {
-        vkDestroyImageView(device, swapchain_image_views[i], nullptr);
+    for (auto & swapchain_image_view : swapchain_image_views) {
+        vkDestroyImageView(device, swapchain_image_view, nullptr);
     }
 }
 
@@ -155,6 +157,16 @@ void Engine::init_commands() {
 }
 
 void Engine::init_sync_structures() {
+    // create the sync structures
+    VkFenceCreateInfo _fence_ci = init::fence_create_info(VK_FENCE_CREATE_SIGNALED_BIT);
+    VkSemaphoreCreateInfo _semaphore_ci = init::semaphore_create_info();
+
+    for (int i = 0; i < FRAME_OVERLAP; i++) {
+        VK_CHECK(vkCreateFence(device, &_fence_ci, nullptr, &frames[i].render_fence));
+
+        VK_CHECK(vkCreateSemaphore(device, &_semaphore_ci, nullptr, &frames[i].swapchain_semaphore));
+        VK_CHECK(vkCreateSemaphore(device, &_semaphore_ci, nullptr, &frames[i].render_semaphore));
+    }
 }
 
 void Engine::terminate() {
@@ -165,6 +177,11 @@ void Engine::terminate() {
         // destroy command pools (frames..)
         for (int i = 0; i < FRAME_OVERLAP; ++i) {
             vkDestroyCommandPool(device, frames[i].command_pool, nullptr);
+
+            // destroy sync objects
+            vkDestroyFence(device, frames[i].render_fence, nullptr);
+            vkDestroySemaphore(device, frames[i].swapchain_semaphore, nullptr);
+            vkDestroySemaphore(device, frames[i].render_semaphore, nullptr);
         }
 
         destroy_swapchain();
@@ -181,7 +198,76 @@ void Engine::terminate() {
     }
 }
 
-void Engine::draw() {}
+void Engine::draw() {
+    // wait until the gpu has finished rendering the last frame, timeout 1s
+    VK_CHECK(vkWaitForFences(device, 1, &get_current_frame().render_fence, true, 1000000000));
+    VK_CHECK(vkResetFences(device, 1, &get_current_frame().render_fence));
+
+    std::uint32_t swapchain_image_index;
+    VK_CHECK(vkAcquireNextImageKHR(device, swapchain, 1000000000, get_current_frame().swapchain_semaphore, nullptr, &swapchain_image_index));
+
+    // cmd = command_buffer
+    VkCommandBuffer cmd = get_current_frame().main_command_buffer;
+
+    // reset cb (commands are finished executing)
+    VK_CHECK(vkResetCommandBuffer(cmd, 0));
+
+    // begin the cb recording, using this cb just once => "one time submit bit"
+    VkCommandBufferBeginInfo cb_begin_info = init::command_buffer_begin_info(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+    // start the cb recording
+    VK_CHECK(vkBeginCommandBuffer(cmd, &cb_begin_info));
+
+    // make the swapchain image into writeable mode before rendering
+    util::transition_image(cmd, swapchain_images[swapchain_image_index], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+
+    // make a clear color from the frame number, 120 frame period flashing
+    VkClearColorValue clear_value;
+    float flash = std::abs(std::sin((float) frame_number / 120.f));
+    clear_value = { {0.0f, 0.0f, flash, 1.0f} };
+
+    VkImageSubresourceRange clear_range = init::image_subresource_range(VK_IMAGE_ASPECT_COLOR_BIT);
+
+    // clear the image
+    vkCmdClearColorImage(cmd, swapchain_images[swapchain_image_index], VK_IMAGE_LAYOUT_GENERAL, &clear_value, 1, &clear_range);
+
+    // make the swapchain image into presentable mode
+    util::transition_image(cmd, swapchain_images[swapchain_image_index], VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+    // finalize the cmd
+    VK_CHECK(vkEndCommandBuffer(cmd));
+
+    // prepare the submission to the queue
+
+    VkCommandBufferSubmitInfo cmd_info = init::command_buffer_submit_info(cmd);
+
+    VkSemaphoreSubmitInfo wait_info = init::semaphore_submit_info(VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT_KHR, get_current_frame().swapchain_semaphore);
+    VkSemaphoreSubmitInfo signal_info = init::semaphore_submit_info(VK_PIPELINE_STAGE_2_ALL_GRAPHICS_BIT, get_current_frame().render_semaphore);
+
+    VkSubmitInfo2 submit = init::submit_info(&cmd_info, &signal_info, &wait_info);
+
+    // submit cmd to the queue and execute it
+    VK_CHECK(vkQueueSubmit2(graphics_queue, 1, &submit, get_current_frame().render_fence));
+
+    // prepare present
+    // this will put the final image to the window view
+
+    VkPresentInfoKHR present_info = {};
+    present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    present_info.pNext = nullptr;
+    present_info.pSwapchains = &swapchain;
+    present_info.swapchainCount = 1;
+
+    present_info.pWaitSemaphores = &get_current_frame().render_semaphore;
+    present_info.waitSemaphoreCount = 1;
+
+    present_info.pImageIndices = &swapchain_image_index;
+
+    VK_CHECK(vkQueuePresentKHR(graphics_queue, &present_info));
+
+    // increase the number of frames drawn
+    frame_number++;
+}
 
 void Engine::run() {
     while (!glfwWindowShouldClose(window.handle)) {

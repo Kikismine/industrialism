@@ -16,7 +16,9 @@ add_executable(${PROJECT_NAME}
         src/engine.cpp
         src/initializers.cpp
         include/engine.hpp
-        include/util.hpp)
+        include/util.hpp
+        include/images.hpp
+        src/images.cpp)
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC
