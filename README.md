@@ -27,6 +27,13 @@ This is something like changelog:
 - currently, all the earlier changelog things should be okay (it's a few hundred lines of code less)
 - the `vk-bootrstrap` will be removed when I want to jog and change this boilerplate stuff etc., but it's not fun for me + it's very time-consuming to write this boilerplate code, and you get really nothing from it (on start, later I'll want to change things...)
 
+11.05.24
+
+_yeah little break_
+- displaying something to the window (blue to black flashing)
+- fences and semaphores for waiting for the gpu rendering (draw) loop
+- some optimization and stuff
+
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
 
