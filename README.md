@@ -34,6 +34,12 @@ _yeah little break_
 - fences and semaphores for waiting for the gpu rendering (draw) loop
 - some optimization and stuff
 
+16.05.24
+
+- I'm feeling stupid, but redoing the project for the third time. I hope it's the last time :D
+- the `vk-bootstrap` library is removed now
+- window creation, instance creation, and vk extension listing are >"rewritten"
+
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
 
