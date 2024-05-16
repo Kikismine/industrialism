@@ -1,11 +1,14 @@
 #include <engine.hpp>
 
-int main() {
-    Engine engine;
+Engine engine;
 
-    engine.init();
-    engine.run();
-    engine.terminate();
+int main() {
+    try {
+        engine.run();
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
+    }
 
     return 0;
 }

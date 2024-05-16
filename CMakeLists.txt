@@ -9,16 +9,13 @@ find_package(Vulkan REQUIRED)
 # add external libs (with cmake)
 add_subdirectory(lib/glm)
 add_subdirectory(lib/glfw)
-add_subdirectory(lib/vkb)
 
 add_executable(${PROJECT_NAME}
         src/main.cpp
         src/engine.cpp
-        src/initializers.cpp
         include/engine.hpp
-        include/util.hpp
-        include/images.hpp
-        src/images.cpp)
+        src/logger.cpp
+        include/logger.hpp)
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC
@@ -35,6 +32,5 @@ target_link_libraries(${PROJECT_NAME}
         ${Vulkan_LIBRARIES}
         glm
         glfw
-        vk-bootstrap::vk-bootstrap
         PRIVATE
 )
