@@ -53,7 +53,7 @@ _yeah, a little break_
 - small logger class for debugging is now working
 - (not coding), but fixed 
 
-Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
+Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
 
 _I know that this changelog will grow, so maybe I'll store all these things in some .txt file and add a link to it ;)_
