@@ -14,7 +14,7 @@ This is something like changelog:
 - creates a configurable vulkan debug messenger
 - finds all available GPUs, checks if they support needed functions and statistics, and sorts them based on their stats, then it picks the best one
 - creates a logical device for GPU communication with the software
-- loading a precompiled shader files (but it doesn't use them)\
+- loading a precompiled shader files (but it doesn't use them)
 
 20.04.24
 
