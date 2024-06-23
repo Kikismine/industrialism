@@ -42,7 +42,7 @@ _yeah, a little break_
 
 22.06.24
 
-- Ye, another complete rewrite, this time, I chose OpenGL, I hope it won't happen again
+- Ye, another complete rewrite, this time, I chose OpenGL, I hope it won't happen again (foreshadowing)
 - **earlier** *(than this date)*:
   - similar structure like in the Vulkan project
   - `Window` class for creating and handling the main window
