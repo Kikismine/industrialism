@@ -36,7 +36,7 @@ _yeah, a little break_
 
 16.05.24
 
-- I'm feeling unintelligent, but redoing the project for the third time. I hope it's the last time :D
+- I'm feeling stupid, but redoing the project for the third time. I hope it's the last time :D
 - the `vk-bootstrap` library is removed now
 - window creation, instance creation, and vk extension listing are >"rewritten"
 
