@@ -2,33 +2,16 @@
 
 #include <util.hpp>
 #include <logger.hpp>
+#include <renderer.hpp>
+#include <window.hpp>
 
-struct Window {
-    GLFWwindow *handle;
-    const VkExtent2D size {1500, 800};
-    std::string title {"vulkan"};
-};
+class Window;
 
 class Engine {
 public:
-    Window window;
-    Logger *logger = Logger::get_logger();
+    std::unique_ptr<Window> window = std::make_unique<Window>(1500, 900, "industrialism");
 
-    // vulkan variables
-    VkInstance instance;
-
-    void run() {
-        logger->set_mode(true);
-
-        init_window();
-        init_vulkan();
-        loop();
-        terminate();
-    }
-private:
-    void init_window();
-    void init_vulkan();
-    void create_instance();
-    void loop() const;
-    void terminate() const;
+    void run();
+    void loop();
+    void terminate();
 };

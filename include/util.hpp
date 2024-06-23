@@ -1,7 +1,7 @@
 #pragma once
 
-// vulkan
-#define GLFW_INCLUDE_VULKAN
+// glfw&opengl
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 // cpp libs
@@ -11,3 +11,9 @@
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
+#include <map>
+
+typedef struct Extent2D {
+    uint32_t width;
+    uint32_t height;
+} Extent2D;

@@ -1,6 +1,6 @@
 # **Industrialism**
 
-_3D Game made in C++ using Vulkan_
+_3D Game made in C++ using OpenGL_
 
 ---
 **Industrialism** is an in-dev game (mostly the engine), focused on _technical_ and _logical_ aspects[^1]
@@ -29,16 +29,24 @@ This is something like changelog:
 
 11.05.24
 
-_yeah little break_
+_yeah, little break_
 - displaying something to the window (blue to black flashing)
 - fences and semaphores for waiting for the gpu rendering (draw) loop
 - some optimization and stuff
 
 16.05.24
 
-- I'm feeling stupid, but redoing the project for the third time. I hope it's the last time :D
+- I'm feeling unintelligent, but redoing the project for the third time. I hope it's the last time :D
 - the `vk-bootstrap` library is removed now
 - window creation, instance creation, and vk extension listing are >"rewritten"
+
+22.06.24
+
+- Ye, another complete rewrite, this time, I chose OpenGL, I hope it won't happen again
+- **earlier** *(than this date)*:
+  - similar structure like in the Vulkan project
+  - `Window` class for creating and handling the main window
+  - I know that's not much of progress, but trust me, this part was freaking hard lol
 
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
@@ -49,10 +57,11 @@ _I know that this changelog will grow, so maybe I'll store all these things in s
 
 ---
 
-- rapid engine, capable of rendering complex things
-- good gameplay
-- at least some story
-- effortless modding system (with custom 'scripting' language or something like lua)
+I want -
+- the engine to be rapid and capable of rendering complex things
+- the game to have a good gameplay and to be rewarding 
+- to have at least some story telling or something
+- it to have an effortless modding system (with custom 'scripting' language or something like lua)
 
 ### Contribution
 
@@ -66,18 +75,21 @@ The same is with the readme, if you want to change something, make a pull reques
 
 ---
 
-- it runs on vulkan 1.3
-- c++ standard is 2023 version
-- it is built on (for now, maybe forever) cmake build system with a main app and engine 'library' that is compiled with the needed libraries, classes and files
+- it runs on OpenGL version 4.6
+- C++ standard is 2023 version
+- it is built on (for now, maybe forever) cmake build system with these main folders:
+  - `src` - contains all `.cpp` files including the `main.cpp` file
+  - `include` - contains all `.hpp` files, they're automatically linked to the `.cpp` files
+  - `lib` - contains all libraries; most of them are git modules that can be automatically updated through git itself
 - libraries the engine is using:
     - [GLFW](https://github.com/glfw/glfw) (for window and input handling)
+    - [glad**2**](https://github.com/Dav1dde/glad) (for handling OpenGL functions etc.), I chose glad version 2, because of more modern functions and things lol
     - [glm](https://github.com/g-truc/glm) (for math)
-    - [vk-bootstrap](https://github.com/charles-lunarg/vk-bootstrap) (for vulkan boilerplate code)
 
 ### Contact
 
 ---
 
-My Discord name is kikismine
+My Discord name is "kikismine"
 
 [^1]: Survival or something similar is considered too.

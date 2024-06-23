@@ -1,5 +1,5 @@
 *.o
 *.spv
 build
-compile.sh
 .idea
+bin
