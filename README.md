@@ -29,7 +29,7 @@ This is something like changelog:
 
 11.05.24
 
-_yeah, little break_
+_yeah, a little break_
 - displaying something to the window (blue to black flashing)
 - fences and semaphores for waiting for the gpu rendering (draw) loop
 - some optimization and stuff
@@ -51,6 +51,7 @@ _yeah, little break_
 23.06.24
 
 - small logger class for debugging is now working
+- (not coding), but fixed 
 
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
