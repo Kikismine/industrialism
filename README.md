@@ -48,6 +48,10 @@ _yeah, little break_
   - `Window` class for creating and handling the main window
   - I know that's not much of progress, but trust me, this part was freaking hard lol
 
+23.06.24
+
+- small logger class for debugging is now working
+
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!\
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
 
