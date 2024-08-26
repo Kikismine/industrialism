@@ -54,6 +54,11 @@ _yeah, a little break_
 - (not coding), but added a `.gitattributes` file for excluding GLAD code from mine
 - renderer's working again
 
+26.8.24
+
+- big break again
+- added a modular input system, that is based on cpp callbacks - when the GLFW `key_callback` detects a key, it'll send it to a new `Input` class, in this class, you can define `GLFW_KEY_...` to a specific `std::function`, and then create a callback based on this `std::function` in `Engine` class, and then attach a normal function (that is in `Engine` or other class) that can normally access all the other functions, classes and variables
+
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.
 
