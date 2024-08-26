@@ -1,7 +1,8 @@
 #pragma once
 
 #include <util.hpp>
-#include "logger.hpp"
+#include <logger.hpp>
+#include <input.hpp>
 
 struct DestroyGLFWwindow {
     void operator()(GLFWwindow* ptr) {
@@ -15,11 +16,17 @@ class Window {
 public:
     Window(int width, int height, std::string _title) noexcept;
 
+    Input* input;
+    Logger* logger = Logger::get_logger();
+
     GLFWwindowHandle handle;
     Extent2D size{};
     std::string title;
 
-    static void init_glfw();
+    void init_glfw();
     void init_window();
-    static void init_glad();
+    void init_glad();
+
+    // actions
+    void quit();
 };

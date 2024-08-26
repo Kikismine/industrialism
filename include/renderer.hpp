@@ -6,5 +6,6 @@ public:
 
     static Renderer *get_renderer();
     void render();
-private:
+
+    float red = 0.48f;
 };

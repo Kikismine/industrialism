@@ -11,6 +11,6 @@ Renderer *Renderer::get_renderer() {
 }
 
 void Renderer::render() {
-    glClearColor(0.48, 0.79, 1.00, 1.0);
+    glClearColor(red, 0.79, 1.00, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 }

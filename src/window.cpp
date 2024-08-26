@@ -2,12 +2,22 @@
 #include <window.hpp>
 #include <logger.hpp>
 
-Logger *logger;
+Input *_input;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    // this just works for the GLFW_PRESS option (for now)
+    _input->init();
+    if (action == GLFW_PRESS)
+        _input->handle(key);
+}
 
 Window::Window(int width, int height, std::string _title) noexcept {
     size.width = width;
     size.height = height;
     title = std::move(_title);
+
+    input = new Input();
+    _input = input;
 }
 
 void Window::init_glfw() {
@@ -33,6 +43,7 @@ void Window::init_window() {
     else
         logger->println("GLFW window created successfully");
 
+    glfwSetKeyCallback(handle.get(), key_callback);
     glfwMakeContextCurrent(handle.get());
 }
 
@@ -44,4 +55,9 @@ void Window::init_glad() {
         logger->println("OpenGL context using GLAD created successfully");
 
     std::cout << "Loaded OpenGL " << GLAD_VERSION_MAJOR(version) << "." << GLAD_VERSION_MINOR(version) << std::endl;
+}
+
+// actions
+void Window::quit() {
+    glfwDestroyWindow(handle.get());
 }

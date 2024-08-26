@@ -51,7 +51,8 @@ _yeah, a little break_
 23.06.24
 
 - small logger class for debugging is now working
-- (not coding), but fixed 
+- (not coding), but added a `.gitattributes` file for excluding GLAD code from mine
+- renderer's working again
 
 Please be aware that this is a very early version, it really does nothing now, but it'll grow to a larger game engine!
 I'm typing all these things that are mandatory for a game engine, but I want to express myself here, because of the time I take to write the actual code.

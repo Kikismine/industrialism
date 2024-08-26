@@ -11,7 +11,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <filesystem>
-#include <map>
 
 typedef struct Extent2D {
     uint32_t width;
