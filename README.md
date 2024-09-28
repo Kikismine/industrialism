@@ -101,6 +101,6 @@ The same is with the readme, if you want to change something, make a pull reques
 
 ---
 
-My Discord name is "kikismine"
+You can find all my contact information on my [webstite](https://www.kikismine.xyz/).
 
 [^1]: Survival or something similar is considered too.
